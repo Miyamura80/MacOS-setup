@@ -3,7 +3,7 @@ Resources to help you get started with MacOS.
 
 
 
-## Useful `iterm2` shortcuts
+## ⌨️ Useful `iterm2` shortcuts
 
 - `CMD + D`: Split screen vertically
 
