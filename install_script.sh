@@ -57,6 +57,12 @@ fi
 print_header "⬇️ Installing Slack"
 print_and_execute brew install --cask slack
 
+# Install tree
+print_header "⬇️ Installing tree"
+# lsd gets in the way sometimes
+print_and_execute brew uninstall lsd 
+print_and_execute brew install tree
+
 # Install Rye
 print_header "⬇️ Installing Rye"
 print_and_execute curl -sSf https://rye.astral.sh/get | bash
