@@ -59,9 +59,10 @@ print_and_execute brew install --cask slack
 
 # Install tree
 print_header "⬇️ Installing tree"
-# lsd gets in the way sometimes
-print_and_execute brew uninstall lsd 
+unalias tree # tree is set to lsd by default, so we need to unalias
 print_and_execute brew install tree
+echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
+source ~/.zshrc
 
 # Install Rye
 print_header "⬇️ Installing Rye"
