@@ -57,6 +57,11 @@ fi
 print_header "⬇️ Installing Slack"
 print_and_execute brew install --cask slack
 
+# Install Secretive
+print_header "⬇️ Installing Secretive"
+print_and_execute brew install secretive
+
+
 # Install tree
 print_header "⬇️ Installing tree"
 unalias tree # tree is set to lsd by default, so we need to unalias
