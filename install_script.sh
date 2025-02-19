@@ -73,6 +73,16 @@ source ~/.zshrc
 print_header "⬇️ Installing Rye"
 print_and_execute curl -sSf https://rye.astral.sh/get | bash
 
+# Install ffmpeg
+print_header "⬇️ Installing ffmpeg"
+print_and_execute brew install ffmpeg
+# Install yt-dlp
+print_header "⬇️ Installing yt-dlp"
+print_and_execute brew install yt-dlp
+
+
+
+
 # Add Rye to PATH
 echo 'source "$HOME/.rye/env"' >> ~/.zshrc
 
