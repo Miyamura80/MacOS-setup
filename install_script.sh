@@ -41,10 +41,6 @@ else
     echo "✅ Homebrew already installed"
 fi
 
-# Install iTerm2
-print_header "⬇️ Installing iTerm2"
-print_and_execute brew install --cask iterm2
-
 # Install Kitty
 print_header "⬇️ Installing Kitty"
 print_and_execute brew install --cask kitty
@@ -73,9 +69,9 @@ print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
 source ~/.zshrc
 
-# Install Rye
-print_header "⬇️ Installing Rye"
-print_and_execute curl -sSf https://rye.astral.sh/get | bash
+# Install uv
+print_header "⬇️ Installing uv"
+print_and_execute curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install ffmpeg
 print_header "⬇️ Installing ffmpeg"
@@ -87,9 +83,6 @@ print_and_execute brew install yt-dlp
 
 
 
-# Add Rye to PATH
-echo 'source "$HOME/.rye/env"' >> ~/.zshrc
-
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"
-echo -e "${BOLD_YELLOW}Note: You may need to manually open iTerm2 and Slack from your Applications folder${RESET}"
+echo -e "${BOLD_YELLOW}Note: You may need to manually open Slack from your Applications folder${RESET}"
