@@ -57,6 +57,10 @@ fi
 print_header "⬇️ Installing Slack"
 print_and_execute brew install --cask slack
 
+# Install AltTab
+print_header "⬇️ Installing AltTab"
+print_and_execute brew install --cask alt-tab
+
 # Install Secretive
 print_header "⬇️ Installing Secretive"
 print_and_execute brew install secretive
