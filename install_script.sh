@@ -61,6 +61,10 @@ print_and_execute brew install --cask slack
 print_header "⬇️ Installing AltTab"
 print_and_execute brew install --cask alt-tab
 
+# Install HiddenBar
+print_header "⬇️ Installing HiddenBar"
+print_and_execute brew install --cask hiddenbar
+
 # Install Secretive
 print_header "⬇️ Installing Secretive"
 print_and_execute brew install secretive
