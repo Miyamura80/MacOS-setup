@@ -45,6 +45,10 @@ fi
 print_header "⬇️ Installing iTerm2"
 print_and_execute brew install --cask iterm2
 
+# Install Kitty
+print_header "⬇️ Installing Kitty"
+print_and_execute brew install --cask kitty
+
 # Install Oh My Zsh if not already installed
 print_header "⬇️ Installing Oh My Zsh"
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
