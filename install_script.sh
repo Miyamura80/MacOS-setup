@@ -88,8 +88,14 @@ print_and_execute brew install ffmpeg
 print_header "⬇️ Installing yt-dlp"
 print_and_execute brew install yt-dlp
 
-
-
+# Install atuin
+print_header "⬇️ Installing atuin"
+print_and_execute brew install atuin
+if ! grep -q 'eval "$(atuin init zsh)"' ~/.zshrc; then
+    echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
+else
+    echo "✅ Atuin already enabled in ~/.zshrc"
+fi
 
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"
