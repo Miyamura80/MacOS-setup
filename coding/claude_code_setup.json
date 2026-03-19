@@ -1,0 +1,24 @@
+ {
+    "hooks": {
+      "Notification": [
+        {
+          "matcher": "idle_prompt",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "terminal-notifier -title 'Claude Code' -message 'Ready for input' -execute \"osascript -e 'tell application \\\"kitty\\\" to activate' && kitty @ focus-window --match id:$KITTY_WINDOW_ID\""
+            }
+          ]
+        },
+        {
+          "matcher": "permission_prompt",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "terminal-notifier -title 'Claude Code' -message 'Permission required' -sound default -execute \"osascript -e 'tell application \\\"kitty\\\" to activate' && kitty @ focus-window --match id:$KITTY_WINDOW_ID\""
+            }
+          ]
+        }
+      ]
+    }
+  }
