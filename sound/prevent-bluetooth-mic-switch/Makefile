@@ -10,16 +10,6 @@ RESET=\033[0m
 # Check dependencies
 ########################################################
 
-check_blueutil:
-	@echo "$(YELLOW)Checking blueutil version...$(RESET)"
-	@if ! command -v blueutil > /dev/null 2>&1; then \
-		echo "$(RED)blueutil is not installed. Please install blueutil before proceeding.$(RESET)"; \
-		exit 1; \
-	else \
-		blueutil --version; \
-	fi
-
-
 check_switchaudio:
 	@echo "$(YELLOW)Checking SwitchAudioSource version...$(RESET)"
 	@if ! command -v SwitchAudioSource > /dev/null 2>&1; then \
@@ -33,17 +23,12 @@ check_switchaudio:
 # Install dependencies
 ########################################################
 
-install_blueutil:
-	@echo "$(GREEN)Installing blueutil...$(RESET)"
-	@brew install blueutil
-	@echo "$(GREEN)Installation complete.$(RESET)"
-
 install_switchaudio:
 	@echo "$(GREEN)Installing SwitchAudioSource...$(RESET)"
 	@brew install switchaudio-osx
 	@echo "$(GREEN)Installation complete.$(RESET)"
 
-install: install_blueutil install_switchaudio
+install: install_switchaudio
 	@echo "$(GREEN)All dependencies installed.$(RESET)"
 
 
