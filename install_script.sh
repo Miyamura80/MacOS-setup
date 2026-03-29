@@ -97,6 +97,15 @@ else
     echo "✅ Atuin already enabled in ~/.zshrc"
 fi
 
+# Install zsh-autosuggestions
+print_header "⬇️ Installing zsh-autosuggestions"
+print_and_execute brew install zsh-autosuggestions
+if ! grep -q 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' ~/.zshrc; then
+    echo 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh' >> ~/.zshrc
+else
+    echo "✅ zsh-autosuggestions already enabled in ~/.zshrc"
+fi
+
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"
 echo -e "${BOLD_YELLOW}Note: You may need to manually open Slack from your Applications folder${RESET}"
