@@ -65,6 +65,10 @@ print_and_execute brew install --cask alt-tab
 print_header "⬇️ Installing HiddenBar"
 print_and_execute brew install --cask hiddenbar
 
+# Install Maccy
+print_header "⬇️ Installing Maccy"
+print_and_execute brew install --cask maccy
+
 # Install Secretive
 print_header "⬇️ Installing Secretive"
 print_and_execute brew install secretive
