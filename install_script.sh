@@ -76,7 +76,7 @@ print_and_execute brew install secretive
 
 # Install tree
 print_header "⬇️ Installing tree"
-unalias tree # tree is set to lsd by default, so we need to unalias
+unalias tree 2>/dev/null || true # tree is often aliased to lsd; tolerate it being unset
 print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
 source ~/.zshrc
