@@ -85,6 +85,22 @@ source ~/.zshrc
 print_header "⬇️ Installing uv"
 print_and_execute curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Install Rust toolchain (rustup-managed)
+print_header "⬇️ Installing Rust toolchain"
+if ! command -v rustup &> /dev/null; then
+    print_and_execute curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+else
+    echo "✅ rustup already installed"
+fi
+
+# Install bun
+print_header "⬇️ Installing bun"
+print_and_execute brew install oven-sh/bun/bun
+
+# Install pnpm
+print_header "⬇️ Installing pnpm"
+print_and_execute brew install pnpm
+
 # Install ffmpeg
 print_header "⬇️ Installing ffmpeg"
 print_and_execute brew install ffmpeg
