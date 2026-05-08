@@ -13,5 +13,5 @@ RESET=\033[0m
 install:
 	@echo "$(YELLOW)⬇️ Installing standard useful applications...$(RESET)"
 	chmod +x install_script.sh
-  ./install_script.sh
+	./install_script.sh
 	@echo "$(GREEN)✅Installation of applications completed.$(RESET)"
