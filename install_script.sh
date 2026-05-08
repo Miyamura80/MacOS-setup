@@ -76,7 +76,7 @@ print_and_execute brew install secretive
 
 # Install tree
 print_header "⬇️ Installing tree"
-unalias tree # tree is set to lsd by default, so we need to unalias
+unalias tree 2>/dev/null || true # tree is often aliased to lsd; tolerate it being unset
 print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
 source ~/.zshrc
@@ -84,6 +84,22 @@ source ~/.zshrc
 # Install uv
 print_header "⬇️ Installing uv"
 print_and_execute curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install Rust toolchain (rustup-managed)
+print_header "⬇️ Installing Rust toolchain"
+if ! command -v rustup &> /dev/null; then
+    print_and_execute curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+else
+    echo "✅ rustup already installed"
+fi
+
+# Install bun
+print_header "⬇️ Installing bun"
+print_and_execute brew install oven-sh/bun/bun
+
+# Install pnpm
+print_header "⬇️ Installing pnpm"
+print_and_execute brew install pnpm
 
 # Install ffmpeg
 print_header "⬇️ Installing ffmpeg"
@@ -109,6 +125,18 @@ if ! grep -q 'source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggesti
 else
     echo "✅ zsh-autosuggestions already enabled in ~/.zshrc"
 fi
+
+# Install Codex CLI
+print_header "⬇️ Installing Codex CLI"
+print_and_execute brew install --cask codex
+
+# Install OpenCode CLI
+print_header "⬇️ Installing OpenCode CLI"
+print_and_execute brew install opencode
+
+# Install Claude Code CLI
+print_header "⬇️ Installing Claude Code CLI"
+print_and_execute brew install --cask claude-code
 
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"
