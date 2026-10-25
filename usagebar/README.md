@@ -47,4 +47,4 @@ dist/UsageBar.app/Contents/MacOS/UsageBar --render-preview .build/previews
 
 The Swift package can be opened in Xcode. `scripts/build.sh` produces the background `.app` bundle, including `LSUIElement` and a stable bundle identifier. Launch at Login should be configured from that bundle rather than `swift run`.
 
-GitHub Actions runs the same verification on UsageBar pull requests and main-branch changes using a macOS runner. Its artifact includes the app ZIP and sample light/dark/tray previews. The 11 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
+`scripts/verify.sh` also runs on macOS CI runners. The 11 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.

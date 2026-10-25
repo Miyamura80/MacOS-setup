@@ -34,10 +34,11 @@ struct UsageBarMain {
                 }
                 try png.write(to: directory.appendingPathComponent("\(name).png"))
             }
-            if let tiff = TrayImage.make(readings: model.readings).tiffRepresentation,
-               let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:]) {
-                try png.write(to: directory.appendingPathComponent("tray.png"))
+            guard let tiff = TrayImage.make(readings: model.readings).tiffRepresentation,
+                  let png = NSBitmapImageRep(data: tiff)?.representation(using: .png, properties: [:]) else {
+                throw UsageError.message("Tray preview rendering failed")
             }
+            try png.write(to: directory.appendingPathComponent("tray.png"))
             print("Rendered previews; both bundled SVG icons loaded successfully.")
             return
         }

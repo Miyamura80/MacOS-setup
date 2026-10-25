@@ -67,7 +67,7 @@ enum ClaudeProvider {
     private static func accessToken(allowKeychainPrompt: Bool) throws -> String {
         let home = FileManager.default.homeDirectoryForCurrentUser
         let directory = credentialDirectory(environment: ProcessInfo.processInfo.environment, home: home)
-        let isDefaultProfile = directory == home.appendingPathComponent(".claude").standardizedFileURL
+        let isDefaultProfile = directory.path == home.appendingPathComponent(".claude").standardizedFileURL.path
         var credentialData: Data?
         // Custom profiles must never silently use the default profile's Keychain login.
         if isDefaultProfile {

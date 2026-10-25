@@ -10,9 +10,10 @@ trap 'rm -rf "$verification_dir"' EXIT
 ditto dist/UsageBar.app "$verification_dir/UsageBar.app"
 (
     cd "$verification_dir"
-    ./UsageBar.app/Contents/MacOS/UsageBar --render-preview "$source_dir/.build/previews"
+    ./UsageBar.app/Contents/MacOS/UsageBar --render-preview "$verification_dir/previews"
     codesign --verify --strict UsageBar.app
 )
-for preview in light dark tray; do test -s ".build/previews/$preview.png"; done
+for preview in light dark tray; do test -s "$verification_dir/previews/$preview.png"; done
 test "$(plutil -extract LSUIElement raw -o - dist/UsageBar.app/Contents/Info.plist)" = true
+ditto "$verification_dir/previews" "$source_dir/.build/previews"
 printf 'Verified regression suite, release bundle, relocated SVG resources, and light/dark/tray rendering.\n'
