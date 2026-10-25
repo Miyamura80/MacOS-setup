@@ -1,0 +1,45 @@
+name: UsageBar
+
+on:
+  pull_request:
+    paths:
+      - 'usagebar/**'
+      - '.github/workflows/usagebar.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'usagebar/**'
+      - '.github/workflows/usagebar.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: usagebar-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Build and regression checks
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Toolchain
+        run: swift --version
+      - name: Test, build, and verify relocated app
+        run: ./usagebar/scripts/verify.sh
+      - name: Package app
+        run: ditto -c -k --sequesterRsrc --keepParent usagebar/dist/UsageBar.app usagebar/dist/UsageBar.zip
+      - name: Upload app and sample previews
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: UsageBar
+          path: |
+            usagebar/dist/UsageBar.zip
+            usagebar/.build/previews/*.png
+          include-hidden-files: true
+          if-no-files-found: error
