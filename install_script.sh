@@ -9,6 +9,14 @@ RESET='\033[0m'
 # Error handling
 set -eo pipefail
 
+macos_setup_source="${BASH_SOURCE[0]}"
+while [ -L "$macos_setup_source" ]; do
+    macos_setup_dir="$(cd -P "$(dirname "$macos_setup_source")" && pwd)"
+    macos_setup_source="$(readlink "$macos_setup_source")"
+    case "$macos_setup_source" in /*) ;; *) macos_setup_source="$macos_setup_dir/$macos_setup_source" ;; esac
+done
+MACOS_SETUP_ROOT="$(cd -P "$(dirname "$macos_setup_source")" && pwd)"
+
 # Helper function for command execution and logging
 print_and_execute() {
     echo -e "${BOLD_GREEN}+ $@${RESET}" >&2
@@ -79,7 +87,7 @@ print_header "⬇️ Installing tree"
 unalias tree 2>/dev/null || true # tree is often aliased to lsd; tolerate it being unset
 print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
-source ~/.zshrc
+# Apply zsh changes in the next terminal session; this installer runs in Bash.
 
 # Install uv
 print_header "⬇️ Installing uv"
@@ -137,6 +145,10 @@ print_and_execute brew install opencode
 # Install Claude Code CLI
 print_header "⬇️ Installing Claude Code CLI"
 print_and_execute brew install --cask claude-code
+
+# Build, install, and open the repository's native usage meters.
+print_header "⬇️ Installing UsageBar"
+print_and_execute "$MACOS_SETUP_ROOT/usagebar/scripts/install.sh"
 
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"

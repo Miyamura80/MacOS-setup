@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+for script in ../install_script.sh scripts/build.sh scripts/install.sh scripts/test-install.sh; do
+    bash -n "$script"
+done
 ./scripts/test.sh
 ./scripts/build.sh
 source_dir="$PWD"
@@ -24,4 +27,7 @@ mv "$resource_bundle" "$backup_bundle"
 for preview in light dark tray; do test -s "$verification_dir/previews/$preview.png"; done
 test "$(plutil -extract LSUIElement raw -o - dist/UsageBar.app/Contents/Info.plist)" = true
 ditto "$verification_dir/previews" "$source_dir/.build/previews"
+# Restore SwiftPM resources before the installer performs its own cached build.
+mv "$backup_bundle" "$resource_bundle"
+./scripts/test-install.sh
 printf 'Verified regression suite, release bundle, relocated SVG resources, and light/dark/tray rendering.\n'

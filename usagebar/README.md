@@ -9,6 +9,20 @@ The menu bar stacks all three bars vertically: Codex weekly on top, then the two
 
 Bars show **percent used**, not remaining. Click them for percentages, reset times, refresh, account usage pages, and Launch at Login. When reset data is available, each meter shows a countdown and the reset date/time in your local time zone. Hover over that line for the full reset timestamp and last-check details. There is no Dock icon. Hover over the menu bar bars for a labeled summary. Unknown readings use a dash; stale readings turn gray and are labeled in the popover.
 
+## Install
+
+The repository's `install_script.sh` installs Codex and Claude Code, then builds, installs, and opens UsageBar. UsageBar defaults to `~/Applications/UsageBar.app`, so its installation needs no administrator access.
+
+To install only UsageBar, from any working directory:
+
+```sh
+/path/to/MacOS-setup/usagebar/scripts/install.sh
+# Optional destination, or install without opening it:
+/path/to/MacOS-setup/usagebar/scripts/install.sh --applications-dir /Applications --no-launch
+```
+
+An alternate destination must be writable. Reruns replace the app atomically and preserve other applications. If another copy is already running, quit it and reopen the installed copy to load the update. Enable **Launch at Login** in the installed app if desired; account sign-in and Keychain approval remain interactive.
+
 ## Build and run
 
 Requires Apple's Command Line Tools (Swift 6+), with no third-party package dependencies.
@@ -19,7 +33,7 @@ cd usagebar
 open dist/UsageBar.app
 ```
 
-To keep the app, copy `dist/UsageBar.app` to `/Applications` or `~/Applications` before enabling **Launch at Login** in its options menu. The build is locally ad-hoc signed; set `CODE_SIGN_IDENTITY` when building if you have a signing identity. Rebuilds can require Keychain approval again when using ad-hoc signing. The app is not notarized for distribution.
+Use the installer above to keep the app in a stable location before enabling **Launch at Login** in its options menu. The build is locally ad-hoc signed; set `CODE_SIGN_IDENTITY` when building if you have a signing identity. Rebuilds can require Keychain approval again when using ad-hoc signing. The app is not notarized for distribution.
 
 ## Accounts
 
@@ -47,4 +61,4 @@ dist/UsageBar.app/Contents/MacOS/UsageBar --render-preview .build/previews
 
 The Swift package can be opened in Xcode. `scripts/build.sh` produces the background `.app` bundle, including `LSUIElement` and a stable bundle identifier. Launch at Login should be configured from that bundle rather than `swift run`.
 
-`scripts/verify.sh` also runs on macOS CI runners. The 14 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
+`scripts/verify.sh` also runs on macOS CI runners. Installer smoke checks also cover first install, replacement, paths with spaces, and resources loaded from the installed bundle. The 14 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
