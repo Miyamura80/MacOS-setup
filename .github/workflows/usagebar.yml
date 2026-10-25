@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'usagebar/**'
+      - 'install_script.sh'
       - '.github/workflows/usagebar.yml'
   push:
     branches: [main]
     paths:
       - 'usagebar/**'
+      - 'install_script.sh'
       - '.github/workflows/usagebar.yml'
   workflow_dispatch:
 

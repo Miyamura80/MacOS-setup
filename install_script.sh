@@ -9,6 +9,8 @@ RESET='\033[0m'
 # Error handling
 set -eo pipefail
 
+MACOS_SETUP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Helper function for command execution and logging
 print_and_execute() {
     echo -e "${BOLD_GREEN}+ $@${RESET}" >&2
@@ -137,6 +139,10 @@ print_and_execute brew install opencode
 # Install Claude Code CLI
 print_header "⬇️ Installing Claude Code CLI"
 print_and_execute brew install --cask claude-code
+
+# Build, install, and open the repository's native usage meters.
+print_header "⬇️ Installing UsageBar"
+print_and_execute "$MACOS_SETUP_ROOT/usagebar/scripts/install.sh"
 
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"

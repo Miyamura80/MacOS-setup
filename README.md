@@ -5,6 +5,8 @@ Resources to help you get started with MacOS.
 
 - [UsageBar](usagebar) — native menu bar meters for Codex weekly and Claude weekly/5-hour usage.
 
+Run `./install_script.sh` (or `make install`) to install the standard apps, including building and opening UsageBar in `~/Applications`. UsageBar needs macOS 14+ and Swift 6+ from Apple's Command Line Tools or Xcode. Its Launch at Login option, account sign-in, and Keychain approval are configured interactively.
+
 ## Recommended installs:
 
 - AltTab
