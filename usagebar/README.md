@@ -37,7 +37,7 @@ The app never prints, saves, or rotates Claude tokens. If Claude's access token 
 # Or only the regression tests:
 ./scripts/test.sh
 # Live integration check: only percentages and actionable errors are printed.
-# This may trigger the standard macOS Keychain access dialog.
+# This never opens Keychain dialogs; approve access from the app popover if requested.
 swift run UsageBar --check
 # Visual preview with labeled sample data; makes no account requests.
 open -n dist/UsageBar.app --args --demo --preview
@@ -47,4 +47,4 @@ dist/UsageBar.app/Contents/MacOS/UsageBar --render-preview .build/previews
 
 The Swift package can be opened in Xcode. `scripts/build.sh` produces the background `.app` bundle, including `LSUIElement` and a stable bundle identifier. Launch at Login should be configured from that bundle rather than `swift run`.
 
-`scripts/verify.sh` also runs on macOS CI runners. The 11 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
+`scripts/verify.sh` also runs on macOS CI runners. The 13 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.

@@ -113,6 +113,7 @@ extension UsageChecks {
         case "$ack" in *initialized*) ;; *) exit 3 ;; esac
         IFS= read -r request
         case "$request" in *rateLimits*) ;; *) exit 4 ;; esac
+        case "$request" in *params*) exit 5 ;; esac
         printf '%s\n' '{"id":2,"result":{"rateLimits":{"secondary":{"usedPercent":37,"windowDurationMins":10080}}}}'
         exec /bin/sleep 30
         """#)

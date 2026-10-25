@@ -91,7 +91,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if CommandLine.arguments.contains("--preview") { togglePopover() }
     }
 
+    func applicationDidBecomeActive(_ notification: Notification) { model.refreshLoginStatus() }
+
     @objc private func togglePopover() {
+        model.refreshLoginStatus()
         guard let button = item.button else { return }
         if popover.isShown { popover.performClose(nil) }
         else {
@@ -173,7 +176,7 @@ struct UsagePanel: View {
                         Image(systemName: "ellipsis.circle").foregroundStyle(.secondary)
                     } else {
                         Menu {
-                            Toggle("Launch at Login", isOn: Binding(get: { model.loginEnabled }, set: { _ in model.toggleLogin() }))
+                            Toggle("Launch at Login", isOn: Binding(get: { model.loginEnabled }, set: { model.setLaunchAtLogin($0) }))
                             Divider()
                             Button("Codex Usage…") { open("https://chatgpt.com/codex/settings/usage") }
                             Button("Claude Usage…") { open("https://claude.ai/settings/usage") }

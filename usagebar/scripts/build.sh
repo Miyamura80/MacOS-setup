@@ -28,11 +28,8 @@ PLIST
 plutil -lint "$app/Contents/Info.plist"
 codesign --force --sign "${CODE_SIGN_IDENTITY:--}" "$app"
 codesign --verify --strict "$app"
-# Publish only a complete, signed bundle; keep the previous app until replacement succeeds.
+# Publish a complete, signed bundle with one atomic rename/swap on the build volume.
 mkdir -p dist
-if [ -e dist/UsageBar.app ]; then mv dist/UsageBar.app "$staging_dir/previous.app"; fi
-if ! mv "$app" dist/UsageBar.app; then
-    if [ -e "$staging_dir/previous.app" ]; then mv "$staging_dir/previous.app" dist/UsageBar.app; fi
-    exit 1
-fi
+swiftc scripts/BundlePublication.swift scripts/PublishMain.swift -o "$staging_dir/publish"
+"$staging_dir/publish" "$app" "$PWD/dist/UsageBar.app"
 printf 'Built %s/dist/UsageBar.app\n' "$PWD"

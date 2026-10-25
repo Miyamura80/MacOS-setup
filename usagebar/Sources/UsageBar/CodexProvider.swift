@@ -85,7 +85,7 @@ enum CodexProvider {
                 if id == 1 {
                     initialized = true
                     try send(["method": "initialized"])
-                    try send(["id": 2, "method": "account/rateLimits/read", "params": [:]])
+                    try send(["id": 2, "method": "account/rateLimits/read"])
                 } else {
                     return try UsageParser.codex(line)
                 }

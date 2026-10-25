@@ -1,17 +1,20 @@
 import Foundation
+import ServiceManagement
 
 private actor RefreshFixture {
     private var continuation: CheckedContinuation<[Meter: UsageWindow], Error>?
     private var codexCalls = 0
+    private var released = false
     func codex() throws -> UsageWindow {
         codexCalls += 1
         if codexCalls == 3 { throw UsageError.message("Test offline") }
         return try UsageWindow(used: Double(codexCalls), resetsAt: nil)
     }
     func blockedClaude() async throws -> [Meter: UsageWindow] {
-        try await withCheckedThrowingContinuation { continuation = $0 }
+        if released { return [:] }
+        return try await withCheckedThrowingContinuation { continuation = $0 }
     }
-    func releaseClaude() { continuation?.resume(returning: [:]); continuation = nil }
+    func releaseClaude() { released = true; continuation?.resume(returning: [:]); continuation = nil }
 }
 
 extension UsageChecks {
@@ -64,5 +67,30 @@ extension UsageChecks {
         try await waitUntil { !keychain.refreshingClaude }
         try expect(!keychain.claudeNeedsAccess && keychain.readings[.claudeWeek]?.window?.used == 50, "Explicit access can recover the provider")
         try expect(keychain.readings[.claudeSession]?.window == nil, "A missing session window stays unavailable")
+    }
+}
+
+@MainActor
+private final class LoginFixture {
+    var status = SMAppService.Status.requiresApproval
+    var changes: [Bool] = []
+    func change(_ enabled: Bool) { changes.append(enabled); status = enabled ? .enabled : .notRegistered }
+}
+
+extension UsageChecks {
+    @MainActor
+    static func loginState() throws {
+        let fixture = LoginFixture()
+        let model = AppModel(loginStatus: { fixture.status }, changeLogin: { fixture.change($0) })
+        try expect(!model.loginEnabled && model.loginError != nil, "Expose pending System Settings approval")
+        fixture.status = .enabled
+        model.setLaunchAtLogin(true)
+        try expect(fixture.changes.isEmpty, "A stale off-state must not unregister an approved service")
+        try expect(model.loginEnabled && model.loginError == nil, "Re-read external approval")
+        model.setLaunchAtLogin(false)
+        try expect(fixture.changes == [false] && !model.loginEnabled, "Honor the requested disabled state")
+        fixture.status = .enabled
+        model.refreshLoginStatus()
+        try expect(model.loginEnabled, "Refresh state after returning from System Settings")
     }
 }

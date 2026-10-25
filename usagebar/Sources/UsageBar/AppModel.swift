@@ -9,7 +9,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var refreshingClaude = false
     @Published private(set) var claudeNeedsAccess = false
     @Published var loginError: String?
-    @Published var loginEnabled = SMAppService.mainApp.status == .enabled
+    @Published private(set) var loginEnabled = false
     @Published private(set) var claudeRetryAt: Date?
     var refreshing: Bool { refreshingCodex || refreshingClaude }
     let demo: Bool
@@ -17,14 +17,23 @@ final class AppModel: ObservableObject {
     private var started = false
     private let codexFetch: @Sendable () async throws -> UsageWindow
     private let claudeFetch: @Sendable (Bool) async throws -> [Meter: UsageWindow]
+    private let loginStatus: () -> SMAppService.Status
+    private let changeLogin: (Bool) throws -> Void
     var onUpdate: (() -> Void)?
 
     init(demo: Bool = false,
          codexFetch: @escaping @Sendable () async throws -> UsageWindow = { try await CodexProvider.fetch() },
-         claudeFetch: @escaping @Sendable (Bool) async throws -> [Meter: UsageWindow] = { try await ClaudeProvider.fetch(allowKeychainPrompt: $0) }) {
+         claudeFetch: @escaping @Sendable (Bool) async throws -> [Meter: UsageWindow] = { try await ClaudeProvider.fetch(allowKeychainPrompt: $0) },
+         loginStatus: @escaping () -> SMAppService.Status = { SMAppService.mainApp.status },
+         changeLogin: @escaping (Bool) throws -> Void = {
+             if $0 { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
+         }) {
         self.demo = demo
         self.codexFetch = codexFetch
         self.claudeFetch = claudeFetch
+        self.loginStatus = loginStatus
+        self.changeLogin = changeLogin
+        refreshLoginStatus()
         if demo {
             for (meter, value) in [(Meter.codexWeek, 38.0), (.claudeWeek, 64.0), (.claudeSession, 21.0)] {
                 readings[meter] = Reading(window: try? UsageWindow(used: value,
@@ -92,13 +101,22 @@ final class AppModel: ObservableObject {
         readings[meter] = reading
     }
 
-    func toggleLogin() {
+    func refreshLoginStatus() {
+        let status = loginStatus()
+        loginEnabled = status == .enabled
+        loginError = status == .requiresApproval
+            ? "Allow UsageBar in System Settings → General → Login Items." : nil
+    }
+
+    func setLaunchAtLogin(_ enabled: Bool) {
         do {
-            if SMAppService.mainApp.status == .enabled { try SMAppService.mainApp.unregister() }
-            else { try SMAppService.mainApp.register() }
-            loginEnabled = SMAppService.mainApp.status == .enabled
-            loginError = SMAppService.mainApp.status == .requiresApproval
-                ? "Allow UsageBar in System Settings → General → Login Items." : nil
-        } catch { loginError = error.localizedDescription }
+            let status = loginStatus()
+            if enabled && status != .enabled && status != .requiresApproval { try changeLogin(true) }
+            if !enabled && status != .notRegistered { try changeLogin(false) }
+            refreshLoginStatus()
+        } catch {
+            loginEnabled = loginStatus() == .enabled
+            loginError = error.localizedDescription
+        }
     }
 }

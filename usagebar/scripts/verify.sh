@@ -4,10 +4,18 @@ cd "$(dirname "$0")/.."
 ./scripts/test.sh
 ./scripts/build.sh
 source_dir="$PWD"
-verification_dir="$(mktemp -d "$PWD/.build/relocated-app.XXXXXX")"
-trap 'rm -rf "$verification_dir"' EXIT
-# A relocated bundle must find its resources without the source or SwiftPM build directory.
+binary_dir="$(swift build -c release --show-bin-path)"
+resource_bundle="$binary_dir/UsageBar_UsageBar.bundle"
+verification_dir="$(mktemp -d "${TMPDIR:-/tmp}/usagebar-verify.XXXXXX")"
+backup_bundle="$verification_dir/build-resources.bundle"
+cleanup() {
+    if [ -e "$backup_bundle" ]; then mv "$backup_bundle" "$resource_bundle"; fi
+    rm -rf "$verification_dir"
+}
+trap cleanup EXIT
+# Hide SwiftPM's original bundle so even older absolute-path accessors cannot mask bad packaging.
 ditto dist/UsageBar.app "$verification_dir/UsageBar.app"
+mv "$resource_bundle" "$backup_bundle"
 (
     cd "$verification_dir"
     ./UsageBar.app/Contents/MacOS/UsageBar --render-preview "$verification_dir/previews"

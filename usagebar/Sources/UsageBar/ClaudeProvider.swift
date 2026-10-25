@@ -76,6 +76,7 @@ enum ClaudeProvider {
             let query: [String: Any] = [
                 kSecClass as String: kSecClassGenericPassword,
                 kSecAttrService as String: "Claude Code-credentials",
+                kSecAttrAccount as String: NSUserName(),
                 kSecReturnData as String: true,
                 kSecMatchLimit as String: kSecMatchLimitOne,
                 kSecUseAuthenticationContext as String: context

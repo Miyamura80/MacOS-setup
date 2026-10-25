@@ -28,7 +28,9 @@ struct UsageChecks {
         try codexTransport()
         try await independentRefreshes()
         try await cooldownAndKeychain()
-        print("Passed 11 regression groups: parsing, account selection, credentials, HTTP errors/redirects, RPC failures/cleanup, independent refreshes, cooldowns, and Keychain recovery.")
+        try loginState()
+        try atomicPublication()
+        print("Passed 13 regression groups: parsing, account selection, credentials, HTTP errors/redirects, RPC failures/cleanup, independent refreshes, cooldowns, and Keychain recovery.")
     }
 
     static func codexBucketSelection() throws {
