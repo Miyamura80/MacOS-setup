@@ -8,8 +8,17 @@ enum UsageProvider: String, CaseIterable, Identifiable {
     var meters: [Meter] { self == .codex ? [.codexWeek] : [.claudeWeek, .claudeSession] }
 
     var image: NSImage? { Self.images[self] }
+    // SwiftPM 6.1 and 6.4 generate different Bundle.module lookups. A packaged app
+    // always owns its resource bundle; command-line builds keep it beside the executable.
+    private static let resourceBundle: Bundle? = {
+        for base in [Bundle.main.resourceURL, Bundle.main.bundleURL] {
+            guard let base else { continue }
+            if let bundle = Bundle(url: base.appendingPathComponent("UsageBar_UsageBar.bundle")) { return bundle }
+        }
+        return nil
+    }()
     private static let images: [Self: NSImage] = Dictionary(uniqueKeysWithValues: allCases.compactMap { provider in
-        guard let url = Bundle.module.url(forResource: provider == .codex ? "chatgpt" : "claude", withExtension: "svg", subdirectory: "Icons"),
+        guard let url = resourceBundle?.url(forResource: provider == .codex ? "chatgpt" : "claude", withExtension: "svg", subdirectory: "Icons"),
               let image = NSImage(contentsOf: url) else { return nil }
         image.isTemplate = provider == .codex
         return (provider, image)
