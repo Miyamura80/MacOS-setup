@@ -229,17 +229,25 @@ private struct UsageRow: View {
             if let error = reading.error, showError {
                 Text(error).font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             }
-            HStack {
-                if let window = reading.window {
-                    if reading.isStale(at: now) { Text("Stale reading").foregroundStyle(.orange) }
-                    else if let reset = window.resetsAt {
-                        Text(reset <= now ? "Reset due · awaiting update" : "Resets \(reset.formatted(.relative(presentation: .named)))")
-                            .help(reset.formatted(date: .complete, time: .shortened))
-                    } else { Text("Reset time unavailable") }
-                    Spacer()
-                    if let fetched = reading.fetchedAt { Text(fetched, style: .relative).help("Last checked \(fetched.formatted())") }
-                } else if reading.error == nil { Text(loading ? "Checking usage…" : "Waiting for usage") }
-            }.font(.system(size: 10)).foregroundStyle(.secondary)
+            if let window = reading.window {
+                HStack(alignment: .firstTextBaseline) {
+                    if let reset = window.resetsAt {
+                        Text(UsageTime.resetCountdown(reset, now: now))
+                        Spacer(minLength: 8)
+                        Text(UsageTime.resetTimestamp(reset))
+                    } else {
+                        Text("Reset time unavailable")
+                    }
+                }
+                .font(.system(size: 10)).foregroundStyle(.secondary)
+                .help(UsageTime.details(reset: window.resetsAt, fetched: reading.fetchedAt))
+                if reading.isStale(at: now) {
+                    Text("Stale reading").font(.system(size: 10)).foregroundStyle(.orange)
+                }
+            } else if reading.error == nil {
+                Text(loading ? "Checking usage…" : "Waiting for usage")
+                    .font(.system(size: 10)).foregroundStyle(.secondary)
+            }
         }
     }
 }

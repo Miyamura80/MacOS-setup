@@ -30,7 +30,8 @@ struct UsageChecks {
         try await cooldownAndKeychain()
         try loginState()
         try atomicPublication()
-        print("Passed 13 regression groups: parsing, account selection, credentials, HTTP errors/redirects, RPC failures/cleanup, independent refreshes, cooldowns, and Keychain recovery.")
+        try resetTimeFormatting()
+        print("Passed 14 regression groups (providers, model state, bundle publication, and reset-time formatting).")
     }
 
     static func codexBucketSelection() throws {

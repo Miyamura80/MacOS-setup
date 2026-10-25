@@ -7,7 +7,7 @@ A native macOS 14+ menu bar app with three horizontal usage bars, grouped by pro
 
 The menu bar stacks all three bars vertically: Codex weekly on top, then the two Claude bars together (weekly above 5-hour). A ChatGPT icon identifies Codex; one Claude icon identifies its pair of bars. The same SVG icons appear in the popover, bundled locally from [eito.me/icons](https://eito.me/icons/).
 
-Bars show **percent used**, not remaining. Click them for percentages, reset times, refresh, account usage pages, and Launch at Login. There is no Dock icon. Hover over the menu bar bars for a labeled summary. Unknown readings use a dash; stale readings turn gray and are labeled in the popover.
+Bars show **percent used**, not remaining. Click them for percentages, reset times, refresh, account usage pages, and Launch at Login. Each meter shows a reset countdown and the reset date/time in your local time zone. Hover over that line for the full reset timestamp and last-check details. There is no Dock icon. Hover over the menu bar bars for a labeled summary. Unknown readings use a dash; stale readings turn gray and are labeled in the popover.
 
 ## Build and run
 
@@ -47,4 +47,4 @@ dist/UsageBar.app/Contents/MacOS/UsageBar --render-preview .build/previews
 
 The Swift package can be opened in Xcode. `scripts/build.sh` produces the background `.app` bundle, including `LSUIElement` and a stable bundle identifier. Launch at Login should be configured from that bundle rather than `swift run`.
 
-`scripts/verify.sh` also runs on macOS CI runners. The 13 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
+`scripts/verify.sh` also runs on macOS CI runners. The 14 regression groups use fake credentials, a mocked HTTP transport, local RPC fixtures, and injected provider closures; they never query your accounts or read Keychain.
