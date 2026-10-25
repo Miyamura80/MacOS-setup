@@ -7,7 +7,7 @@ A native macOS 14+ menu bar app with three horizontal usage bars, grouped by pro
 
 The menu bar stacks all three bars vertically: Codex weekly on top, then the two Claude bars together (weekly above 5-hour). A ChatGPT icon identifies Codex; one Claude icon identifies its pair of bars. The same SVG icons appear in the popover, bundled locally from [eito.me/icons](https://eito.me/icons/).
 
-Bars show **percent used**, not remaining. Click them for percentages, reset times, refresh, account usage pages, and Launch at Login. Each meter shows a reset countdown and the reset date/time in your local time zone. Hover over that line for the full reset timestamp and last-check details. There is no Dock icon. Hover over the menu bar bars for a labeled summary. Unknown readings use a dash; stale readings turn gray and are labeled in the popover.
+Bars show **percent used**, not remaining. Click them for percentages, reset times, refresh, account usage pages, and Launch at Login. When reset data is available, each meter shows a countdown and the reset date/time in your local time zone. Hover over that line for the full reset timestamp and last-check details. There is no Dock icon. Hover over the menu bar bars for a labeled summary. Unknown readings use a dash; stale readings turn gray and are labeled in the popover.
 
 ## Build and run
 
