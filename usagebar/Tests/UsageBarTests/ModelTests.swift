@@ -44,6 +44,12 @@ extension UsageChecks {
         try expect(model.readings[.codexWeek]?.isStale() == true, "Mark retained data stale")
         await fixture.releaseClaude()
         try await waitUntil { !model.refreshingClaude }
+        // Force release-before-registration rather than relying on the scheduler to expose it.
+        let earlyFixture = RefreshFixture()
+        await earlyFixture.releaseClaude()
+        let earlyModel = AppModel(claudeFetch: { _ in try await earlyFixture.blockedClaude() })
+        earlyModel.refreshClaude()
+        try await waitUntil { !earlyModel.refreshingClaude }
     }
 
     @MainActor
