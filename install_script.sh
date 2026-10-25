@@ -81,7 +81,7 @@ print_header "⬇️ Installing tree"
 unalias tree 2>/dev/null || true # tree is often aliased to lsd; tolerate it being unset
 print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
-source ~/.zshrc
+# Apply zsh changes in the next terminal session; this installer runs in Bash.
 
 # Install uv
 print_header "⬇️ Installing uv"
