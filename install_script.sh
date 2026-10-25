@@ -9,7 +9,13 @@ RESET='\033[0m'
 # Error handling
 set -eo pipefail
 
-MACOS_SETUP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+macos_setup_source="${BASH_SOURCE[0]}"
+while [ -L "$macos_setup_source" ]; do
+    macos_setup_dir="$(cd -P "$(dirname "$macos_setup_source")" && pwd)"
+    macos_setup_source="$(readlink "$macos_setup_source")"
+    case "$macos_setup_source" in /*) ;; *) macos_setup_source="$macos_setup_dir/$macos_setup_source" ;; esac
+done
+MACOS_SETUP_ROOT="$(cd -P "$(dirname "$macos_setup_source")" && pwd)"
 
 # Helper function for command execution and logging
 print_and_execute() {

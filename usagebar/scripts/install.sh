@@ -43,7 +43,13 @@ fi
 
 # Resolve relative destinations against the caller's directory, before the build changes cwd.
 case "$applications_dir" in /*) ;; *) applications_dir="$PWD/$applications_dir" ;; esac
-project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+installer_source="${BASH_SOURCE[0]}"
+while [ -L "$installer_source" ]; do
+    installer_dir="$(cd -P "$(dirname "$installer_source")" && pwd)"
+    installer_source="$(readlink "$installer_source")"
+    case "$installer_source" in /*) ;; *) installer_source="$installer_dir/$installer_source" ;; esac
+done
+project_dir="$(cd -P "$(dirname "$installer_source")/.." && pwd)"
 "$project_dir/scripts/build.sh"
 mkdir -p "$applications_dir"
 applications_dir="$(cd "$applications_dir" && pwd)"

@@ -18,7 +18,7 @@ To install only UsageBar, from any working directory:
 ```sh
 /path/to/MacOS-setup/usagebar/scripts/install.sh
 # Optional destination, or install without opening it:
-./usagebar/scripts/install.sh --applications-dir /Applications --no-launch
+/path/to/MacOS-setup/usagebar/scripts/install.sh --applications-dir /Applications --no-launch
 ```
 
 An alternate destination must be writable. Reruns replace the app atomically and preserve other applications. If another copy is already running, quit it and reopen the installed copy to load the update. Enable **Launch at Login** in the installed app if desired; account sign-in and Keychain approval remain interactive.
