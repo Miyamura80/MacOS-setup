@@ -1,6 +1,10 @@
 # 🍏 MacOS-setup
 Resources to help you get started with MacOS. 
 
+## Apps
+
+- [UsageBar](usagebar) — native menu bar meters for Codex weekly and Claude weekly/5-hour usage.
+
 ## Recommended installs:
 
 - AltTab
