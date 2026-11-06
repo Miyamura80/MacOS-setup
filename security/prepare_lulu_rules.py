@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Prepare LuLu 4.5+ JSON using installed agent paths and an optional rule export."""
+
+import argparse
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import uuid
+
+
+def signing_key(path):
+    """Match LuLu's Rule.generateKey and signing.m classification."""
+    result = subprocess.run(
+        ["/usr/bin/codesign", "-d", "--verbose=4", str(path)],
+        capture_output=True, text=True, check=False,
+    )
+    fields = result.stderr.splitlines()
+    identifier = next((s.partition("=")[2] for s in fields if s.startswith("Identifier=")), None)
+    authorities = [s.partition("=")[2] for s in fields if s.startswith("Authority=")]
+    requirements = (
+        (1, "anchor apple"),
+        (2, 'anchor apple generic and certificate leaf [subject.CN] = "Apple Mac OS Application Signing"'),
+        (2, 'anchor apple generic and certificate leaf [subject.CN] = "Apple iPhone OS Application Signing"'),
+        (3, "anchor apple generic"),
+    )
+    for signer, requirement in requirements:
+        verified = subprocess.run(
+            ["/usr/bin/codesign", "-v", f"-R={requirement}", str(path)],
+            capture_output=True, check=False,
+        )
+        if verified.returncode == 0 and identifier:
+            info = {"signatureIdentifier": identifier, "signatureAuthorities": authorities,
+                    "signatureSigner": signer, "signatureStatus": 0}
+            if signer in (1, 2):
+                return identifier, info
+            if authorities:
+                return f"{identifier}:{authorities[0]}", info
+    return str(path), None
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--existing", type=Path, help="LuLu JSON export to preserve")
+    parser.add_argument("--agent", action="append", default=[], type=Path,
+                        help="Additional native agent executable (repeatable)")
+    parser.add_argument("--output", required=True, type=Path)
+    args = parser.parse_args()
+    if args.existing and args.existing.resolve() == args.output.resolve():
+        parser.error("Keep the original LuLu export separate from the output")
+    rules = json.loads(args.existing.read_text()) if args.existing else {}
+    if not isinstance(rules, dict) or any(
+        not isinstance(group, list) or any(not isinstance(rule, dict) for rule in group)
+        for group in rules.values()
+    ):
+        parser.error("Existing rules must be a LuLu JSON export (object of rule arrays)")
+
+    targets = {}
+    for name in ("codex", "claude", "opencode"):
+        candidate = shutil.which(name)
+        if candidate:
+            targets[Path(candidate).resolve()] = 2  # Process + Kids
+    for path in args.agent:
+        targets[path.expanduser().resolve()] = 2
+    for candidate in ("/usr/bin/curl", shutil.which("curl")):
+        if candidate:
+            targets.setdefault(Path(candidate).resolve(), 0)  # Process only
+
+    generated = 0
+    for path, scope in targets.items():
+        if not path.is_file() or not os.access(path, os.X_OK):
+            parser.error(f"Not an executable: {path}")
+        # A JS entrypoint identifies node/bun as the running process. Do not give
+        # every use of a shared interpreter a Process + Kids exception.
+        if scope == 2:
+            with path.open("rb") as executable:
+                if executable.read(2) == b"#!":
+                    print(f"Skipped script entrypoint {path}; see README for native executable setup.")
+                    continue
+        key, cs_info = signing_key(path)
+        rule_id = str(uuid.uuid5(uuid.NAMESPACE_URL, f"macos-setup:lulu:{path}:{scope}"))
+        rule = {"key": key, "uuid": rule_id, "path": str(path), "name": path.name,
+                "endpointAddr": "*", "endpointPort": "*", "isEndpointAddrRegex": 0,
+                "type": 3, "scope": scope, "action": 1, "isDisabled": 0}
+        if cs_info:
+            rule["csInfo"] = cs_info
+        group = rules.setdefault(key, [])
+        # Re-running replaces our own rule, preserving unrelated rules.
+        group[:] = [item for item in group if item.get("uuid") != rule_id]
+        group.append(rule)
+        generated += 1
+        print(f"Allow {'Process + Kids' if scope == 2 else 'Process'}: {path}")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(rules, indent=2) + "\n")
+    print(f"Prepared {generated} rules in {args.output}; no live settings were changed.")
+    print("Existing installation? Export LuLu rules and rerun with --existing before importing.")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,11 @@
 # 🍏 MacOS-setup
 Resources to help you get started with MacOS. 
 
+`./install_script.sh` also installs the Objective-See security suite and prepares
+LuLu rules for coding agents and curl. Complete the required macOS approvals,
+rule import, and BlockBlock configuration in the
+[security setup guide](security/README.md).
+
 ## Recommended installs:
 
 - AltTab

@@ -57,9 +57,17 @@ fi
 print_header "⬇️ Installing Slack"
 print_and_execute brew install --cask slack
 
+# Install Brave Browser
+print_header "⬇️ Installing Brave Browser"
+print_and_execute brew install --cask brave-browser
+
 # Install AltTab
 print_header "⬇️ Installing AltTab"
 print_and_execute brew install --cask alt-tab
+
+# Install Tailscale
+print_header "⬇️ Installing Tailscale"
+print_and_execute brew install --cask tailscale-app
 
 # Install HiddenBar
 print_header "⬇️ Installing HiddenBar"
@@ -68,6 +76,10 @@ print_and_execute brew install --cask hiddenbar
 # Install Maccy
 print_header "⬇️ Installing Maccy"
 print_and_execute brew install --cask maccy
+
+# Install FluidVoice (open-source voice dictation: https://fluidvoice.com/)
+print_header "⬇️ Installing FluidVoice"
+print_and_execute brew install --cask fluidvoice
 
 # Install Secretive
 print_header "⬇️ Installing Secretive"
@@ -79,7 +91,6 @@ print_header "⬇️ Installing tree"
 unalias tree 2>/dev/null || true # tree is often aliased to lsd; tolerate it being unset
 print_and_execute brew install tree
 echo "alias tree='/opt/homebrew/bin/tree'" >> ~/.zshrc
-source ~/.zshrc
 
 # Install uv
 print_header "⬇️ Installing uv"
@@ -138,6 +149,20 @@ print_and_execute brew install opencode
 print_header "⬇️ Installing Claude Code CLI"
 print_and_execute brew install --cask claude-code
 
+# Install security tools last so activation cannot interrupt developer-tool downloads.
+print_header "🛡️ Installing Objective-See security tools"
+for security_tool in lulu knockknock blockblock oversight reikey taskexplorer netiquette whatsyoursign ransomwhere; do
+    print_and_execute brew install --cask "$security_tool"
+done
+
+print_header "🛡️ Preparing coding-agent firewall rules"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+print_and_execute python3 "$SCRIPT_DIR/security/prepare_lulu_rules.py" \
+    --output "$SCRIPT_DIR/security/lulu-developer-rules.local.json"
+echo "Finish LuLu/BlockBlock activation and rule setup: $SCRIPT_DIR/security/README.md"
+echo "Rules are prepared, not active: LuLu requires a manual import and macOS approvals."
+
 print_header "✅✅✅ Installation Complete! ✅✅✅"
 echo -e "${BOLD_GREEN}Please restart your terminal or run 'source ~/.zshrc' to apply changes${RESET}"
 echo -e "${BOLD_YELLOW}Note: You may need to manually open Slack from your Applications folder${RESET}"
+echo -e "${BOLD_YELLOW}Open Tailscale from Applications and sign in to connect this Mac${RESET}"
