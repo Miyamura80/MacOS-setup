@@ -59,7 +59,7 @@ children can lose their ancestry and require a separate, specific rule.
 ## BlockBlock and Python script execution
 
 BlockBlock's persistence rules and its execution protections are separate.
-For normal development use Settings > Protection with **Notarization > All off**
+For normal development use Settings > Protection with **Notarization enabled and its All option off**
 (restrict notarization checks to downloaded programs). If generated Python
 scripts still trigger execution alerts, turn off **Notarization** and
 **Block (Downloaded) Scripts** in that pane for your development workflow.
@@ -67,9 +67,10 @@ This reduces execution protection globally, but leaves persistence monitoring
 enabled. Keep BlockBlock enabled and its passive mode off.
 
 There is no supported persistent per-agent exception for these execution modes:
-execution approvals are cached only until reboot/BlockBlock restart. If keeping
-those protections enabled, approve the specific trusted execution alert again
-after restart. A persistent Python-interpreter allow rule does not fix this.
+execution approvals may be cached only until reboot/BlockBlock restart, depending
+on mode and version. Recent downloaded-only modes may remove quarantine when an
+item is allowed, so that item may not prompt again. With those protections
+enabled, review any renewed execution alert after restart. A persistent Python-interpreter allow rule does not fix this.
 The setup script does not pretend to install such a rule or edit BlockBlock's
 private preference/rule files.
 

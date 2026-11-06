@@ -155,6 +155,9 @@ for security_tool in lulu knockknock blockblock oversight reikey taskexplorer ne
     print_and_execute brew install --cask "$security_tool"
 done
 
+print_header "⬇️ Installing Python for firewall rule generation"
+print_and_execute brew install python
+
 print_header "🛡️ Preparing coding-agent firewall rules"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 print_and_execute python3 "$SCRIPT_DIR/security/prepare_lulu_rules.py" \
